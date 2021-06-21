@@ -1,7 +1,7 @@
 import Config
 
 config :api, Plants.Repo,
-  database: "api_repo",
+  database: "planten",
   username: "root",
   password: "",
   hostname: "localhost"
