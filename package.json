@@ -1,0 +1,11 @@
+{
+  "name": "final-assignment-year-2",
+  "version": "1.0.0",
+  "description": "Last Assignment for the second school year, custom project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
