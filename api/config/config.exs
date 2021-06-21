@@ -2,6 +2,8 @@ import Config
 
 config :api, Plants.Repo,
   database: "api_repo",
-  username: "user",
-  password: "pass",
+  username: "root",
+  password: "",
   hostname: "localhost"
+
+config :api, ecto_repos: [Plants.Repo]

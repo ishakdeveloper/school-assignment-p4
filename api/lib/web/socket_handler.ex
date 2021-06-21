@@ -1,1 +1,3 @@
-# Optioneel, word misschien niet gebruikt.
+defmodule Web.SocketHandler do
+
+end
