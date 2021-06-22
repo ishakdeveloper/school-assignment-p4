@@ -4,6 +4,11 @@ defmodule Api do
   use Plug.Router
 
   alias Web.Routes.Plants
+  alias Web.Routes.PlantInfo
+  alias Web.Routes.Bestelling
+  alias Web.Routes.Bestelregel
+  alias Web.Routes.Leverancier
+  alias Web.Routes.LevAssortiment
 
   plug :match
   plug :dispatch
@@ -12,6 +17,11 @@ defmodule Api do
 
   # TODO: Misschien API Versioning toevoegen
   forward "/plants", to: Plants
+  forward "/plant_info", to: PlantInfo
+  forward "/bestelling", to: Bestelling
+  forward "/bestelregel", to: Bestelregel
+  forward "/leverancier", to: Leverancier
+  forward "/lev_assortiment", to: LevAssortiment
 
   get "/" do
     conn |> send_resp(200, Jason.encode!(%{message: "Homepagina."}))
