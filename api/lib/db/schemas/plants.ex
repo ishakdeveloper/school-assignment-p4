@@ -5,10 +5,8 @@ defmodule DB.Schemas.PlantSchema do
   @items [:plantcode, :plantnaam, :soort, :kleur, :hoogte, :bloeitijd_start, :bloeitijd_einde, :prijs]
   @derive {Jason.Encoder, only: @items}
 
-  # TODO: Fix primary key.
-  @primary_key false
   schema "plant" do
-    field :plantcode, :integer
+    field :plantcode, :integer, primary_key: true
     field :plantnaam, :string
     field :soort, :string
     field :kleur, :string
