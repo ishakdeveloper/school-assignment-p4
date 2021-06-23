@@ -30,7 +30,7 @@ defmodule Web.Routes.Plants do
   end
 
   put "/update/:plantcode" do
-    id = conn.params["id"]
+    id = conn.params["plantcode"]
     plant = PlantContext.get_one_plant!(id)
     PlantContext.update_plant(plant, conn.body_params)
     conn
