@@ -3,7 +3,7 @@ defmodule DB.Schemas.PlantSchema do
   import Ecto.Changeset
 
   @items [:plantcode, :plantnaam, :soort, :kleur, :hoogte, :bloeitijd_start, :bloeitijd_einde, :prijs]
-  @derive {Jason.Encoder, only: @items}
+  @derive {Jason.Encoder, only: [:plantcode, :plantnaam, :soort, :kleur, :hoogte, :bloeitijd_start, :bloeitijd_einde, :prijs]}
 
   @primary_key {:plantcode, :id, autogenerate: true}
   schema "plant" do
@@ -16,9 +16,9 @@ defmodule DB.Schemas.PlantSchema do
     field :prijs, :float
   end
 
-  def changeset(plant, attrs) do
+  def changeset(plant, attrs \\ %{}) do
     plant
-      |> cast(attrs, @items)
-      |> validate_required(@items)
+      |> cast(attrs, [:plantcode, :plantnaam, :soort, :kleur, :hoogte, :bloeitijd_start, :bloeitijd_einde, :prijs])
+      # |> validate_required(@items)
   end
 end

@@ -10,10 +10,10 @@ defmodule Api do
   alias Web.Routes.Leverancier
   alias Web.Routes.LevAssortiment
 
+  plug Plug.Parsers, parsers: [:urlencoded, :multipart, :json], pass: ["application/json"], json_decoder: Jason
+
   plug :match
   plug :dispatch
-
-  plug Plug.Parsers, parsers: [:json], pass: ["application/json"], json_decoder: Jason
 
   # TODO: Misschien API Versioning toevoegen
   forward "/plants", to: Plants

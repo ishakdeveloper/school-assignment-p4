@@ -9,7 +9,6 @@ defmodule Api.Application do
       Plug.Cowboy.child_spec(scheme: :http, plug: Api, options: [port: String.to_integer("4000"), dispatch: dispatch()])
     ]
 
-
     opts = [strategy: :one_for_one, name: Api.Supervisor]
 
     Logger.info "Server started!"
