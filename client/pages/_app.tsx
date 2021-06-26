@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import '../styles/globals.css'
+import { Container } from '@material-ui/core';
 
 function MyApp({ Component, pageProps }) {
   React.useEffect(() => {
@@ -19,7 +20,9 @@ function MyApp({ Component, pageProps }) {
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
       </Head>
-      <Component {...pageProps} />
+      <div className="app-container">
+        <Component {...pageProps} />
+      </div>
     </React.Fragment>
   ) 
 }

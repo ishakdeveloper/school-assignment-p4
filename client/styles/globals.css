@@ -14,3 +14,54 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.app-container {
+  max-width: 1760px;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+}
+
+.app-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 8rem;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.app-filters {
+  display: flex;
+}
+
+.table-container {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.plant-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.plant-item-left {
+  display: flex;
+  align-items: center;
+}
+
+.plant-checkbox {
+  margin-left: 10px;
+}
+
+.plant-title {
+  margin-left: 15px;
+}
