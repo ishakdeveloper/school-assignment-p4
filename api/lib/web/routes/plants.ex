@@ -4,6 +4,7 @@ defmodule Web.Routes.Plants do
 
   alias DB.PlantContext
 
+  plug CORSPlug
   plug :match
   plug :dispatch
 
@@ -11,7 +12,7 @@ defmodule Web.Routes.Plants do
     plants = PlantContext.get_plants()
     conn
       |> put_resp_content_type("application/json")
-      |> send_resp(200, Jason.encode!(%{plants: plants}))
+      |> send_resp(200, Jason.encode!(plants))
   end
 
   get "/:plantcode" do
@@ -38,7 +39,7 @@ defmodule Web.Routes.Plants do
       |> send_resp(200, Jason.encode!(%{message: "Plant succesvol bewerkt."}))
   end
 
-  delete "/:plantcode" do
+  delete "/delete/:plantcode" do
     id = conn.params["plantcode"]
     plant = PlantContext.get_one_plant!(id)
     PlantContext.delete_plant(plant)

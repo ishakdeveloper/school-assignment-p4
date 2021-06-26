@@ -5,15 +5,16 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Button } from '@material-ui/core';
+import { PlantI } from '../types/models/plant-model'
 
 interface DialogContentProps {
-    plantTitle: string
+    plant: PlantI
     isOpen: boolean
     handleClose: () => void
+    handleDelete: (id: number) => void
 }
 
-const ConfirmDeleteDialog: React.FC<DialogContentProps> = ({ plantTitle, isOpen, handleClose }) => {
-
+const ConfirmDeleteDialog: React.FC<DialogContentProps> = ({ plant, isOpen, handleClose, handleDelete }) => {
     return (
         <Dialog
         open={isOpen}
@@ -23,13 +24,13 @@ const ConfirmDeleteDialog: React.FC<DialogContentProps> = ({ plantTitle, isOpen,
       >
         <DialogTitle id="alert-dialog-title">Plant Verwijderen</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">Weet je zeker dat je plant <strong>"{ plantTitle }"</strong> wilt verwijderen?</DialogContentText>
+          <DialogContentText id="alert-dialog-description">Weet je zeker dat je plant <strong>"{ plant.plantnaam }"</strong> wilt verwijderen?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button onClick={() => {handleDelete(plant.plantcode); handleClose()}} color="primary" autoFocus>
             Verwijder
           </Button>
         </DialogActions>

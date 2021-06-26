@@ -1,25 +1,19 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import { Avatar, Button, Checkbox, Tooltip, Typography } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import PermMediaIcon from '@material-ui/icons/PermMedia';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog";
 import CreatePlantDialog from "../components/CreatePlantDialog";
 import EditPlantDialog from "../components/EditPlantDialog";
-import { Table, TableHead, TableBody, TableRow, TableCell, Select, MenuItem, InputLabel } from '@material-ui/core'
+import { Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core'
+import { PlantI } from "../types/models/plant-model";
+import { addPlant, deletePlant, getPlants, updatePlant } from "../services/plant-service";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,9 +44,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
   const classes = useStyles();
+  const [plants, setPlants] = useState<PlantI[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
   const [deleteDialog, setDeleteDialog] = useState(false)
   const [createDialog, setCreateDialog] = useState(false)
   const [editDialog, setEditDialog] = useState(false)
+  const [plantInfo, setPlantInfo] = useState(null)
+  const handleAddPlant = (payload: PlantI) => { addPlant(payload) }
+  const handleEditPlant = (id: number, payload: PlantI) => { updatePlant(id, payload) }
+  const handleDeletePlant = (id: number) => { deletePlant(id) }
+  
+  useEffect(() => { getPlants().then((data: PlantI[]) => setPlants(data)), setLoading(false) }, [plants])
 
   return (
     <Fragment>
@@ -86,28 +88,30 @@ export default function Home() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
-                            <TableCell>12</TableCell>
-                            <TableCell>Lorem</TableCell>
-                            <TableCell align="right">Ipsum</TableCell>
-                            <TableCell align="right">Dolor</TableCell>
-                            <TableCell align="right">Sit</TableCell>
-                            <TableCell align="right">2</TableCell>
-                            <TableCell align="right">6</TableCell>
-                            <TableCell align="right">16.43</TableCell>
+                      {loading ? <div>Loading...</div> : plants.slice().reverse().map((p, i) => (
+                        <TableRow key={i}>
+                            <TableCell>{ p.plantcode }</TableCell>
+                            <TableCell>{ p.plantnaam }</TableCell>
+                            <TableCell align="right">{ p.soort }</TableCell>
+                            <TableCell align="right">{ p.kleur }</TableCell>
+                            <TableCell align="right">{ p.hoogte }</TableCell>
+                            <TableCell align="right">{ p.bloeitijd_start }</TableCell>
+                            <TableCell align="right">{ p.bloeitijd_einde }</TableCell>
+                            <TableCell align="right">{ p.prijs }</TableCell>
                             <TableCell align="right">
                                 <Tooltip title="Plant bewerken" aria-label="bewerken">
-                                  <IconButton type="submit" onClick={() => setEditDialog(true)} className={classes.iconButton} aria-label="search">
+                                  <IconButton type="submit" onClick={() => {setEditDialog(true); setPlantInfo(p)}} className={classes.iconButton} aria-label="search">
                                     <CreateIcon />
                                   </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Plant verwijderen" aria-label="verwijderen">
-                                  <IconButton type="submit" onClick={() => setDeleteDialog(true)} className={classes.iconButton} aria-label="search">
+                                  <IconButton type="submit" onClick={() => {setDeleteDialog(true); setPlantInfo(p)}} className={classes.iconButton} aria-label="search">
                                     <DeleteIcon />
                                   </IconButton>
                                 </Tooltip>
                             </TableCell>
                         </TableRow>
+                      ))}
                     </TableBody>
                 </Table>
             </Paper>
@@ -118,7 +122,8 @@ export default function Home() {
         <ConfirmDeleteDialog 
           isOpen={deleteDialog} 
           handleClose={() => setDeleteDialog(false)} 
-          plantTitle="Roos" 
+          handleDelete={handleDeletePlant}
+          plant={plantInfo} 
         />
       )}
 
@@ -126,6 +131,7 @@ export default function Home() {
         <CreatePlantDialog
           isOpen={createDialog} 
           handleClose={() => setCreateDialog(false)} 
+          handleAddPlant={handleAddPlant}
         />
       )}
 
@@ -133,6 +139,8 @@ export default function Home() {
         <EditPlantDialog
           isOpen={editDialog} 
           handleClose={() => setEditDialog(false)} 
+          handleEditPlant={handleEditPlant}
+          plant={plantInfo}
         />
       )}
     </Fragment>

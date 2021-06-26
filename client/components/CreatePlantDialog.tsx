@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React, { SyntheticEvent, useState } from 'react'
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, Select, MenuItem, FormControl } from '@material-ui/core'
 import { createStyles, makeStyles, withStyles, Theme } from '@material-ui/core/styles';
+import { addPlant } from '../services/plant-service';
+import { PlantI } from '../types/models/plant-model';
+import { useForm, Controller } from 'react-hook-form';
 
 interface DialogContentProps {
     isOpen: boolean
     handleClose: () => void
+    handleAddPlant: (payload: PlantI) => void
 }
 
 const BootstrapInput = withStyles((theme: Theme) =>
@@ -55,57 +59,57 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const CreatePlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose }) => {
+const CreatePlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, handleAddPlant }) => {
   const classes = useStyles();
-  const [kleur, setKleur] = useState('');
-  const handleKleurInput = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setKleur(event.target.value as string);
-  };
-    return (
-      <React.Fragment>
-        <Dialog open={isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Plant toevoegen</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nobis?
-            </DialogContentText>
-            <TextField  variant="outlined" autoFocus margin="dense" id="title" label="Naam" type="text" fullWidth />
+  const { register, handleSubmit } = useForm()
+
+  const handleFormSubmit = (data) => {
+    handleAddPlant(data)
+    console.log(data)
+    handleClose()
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog open={isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Plant toevoegen</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nobis?
+          </DialogContentText>
+          <form onSubmit={handleSubmit(handleFormSubmit)}>
+            <TextField {...register('plantnaam')} variant="outlined"  margin="dense" id="title" label="Naam" type="text" fullWidth />
             <FormControl fullWidth>
-              <Select fullWidth value={kleur} onChange={handleKleurInput} placeholder="Test" input={<BootstrapInput />} >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+              <Select {...register('soort')} fullWidth placeholder="Test" input={<BootstrapInput />} >
+                <MenuItem value="HEESTER">HEESTER</MenuItem>
+                <MenuItem value="BOOM">BOOM</MenuItem>
+                <MenuItem value="VAST">VAST</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth className={classes.marginForm}>
-              <Select fullWidth value={kleur} onChange={handleKleurInput} placeholder="Test" input={<BootstrapInput />} >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+              <Select {...register('kleur')} fullWidth placeholder="Test" input={<BootstrapInput />} >
+                <MenuItem value="ROOD">ROOD</MenuItem>
+                <MenuItem value="GROEN">GROEN</MenuItem>
+                <MenuItem value="BLAUW">BLAUW</MenuItem>
               </Select>
             </FormControl>
-            <TextField variant="outlined" margin="dense" id="description" label="Hoogte" type="text" fullWidth />
-            <TextField variant="outlined" margin="dense" id="description" label="Start bloeitijd" type="number" fullWidth />
-            <TextField variant="outlined" margin="dense" id="description" label="Einde bloeitijd" type="number" fullWidth />
-            <TextField variant="outlined" margin="dense" id="description" label="Prijs" type="number" fullWidth />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} color="primary">
-              Aanmaken
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </React.Fragment>
-    )
+            <TextField {...register('hoogte')} variant="outlined" margin="dense" id="description" label="Hoogte" type="number" fullWidth />
+            <TextField {...register('bloeitijd_start')} variant="outlined" margin="dense" id="description" label="Start bloeitijd" type="number" fullWidth />
+            <TextField {...register('bloeitijd_eind')} variant="outlined" margin="dense" id="description" label="Einde bloeitijd" type="number" fullWidth />
+            <TextField {...register('prijs')} variant="outlined" margin="dense" id="description" label="Prijs" type="number" fullWidth />
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit(handleFormSubmit)} color="primary" type="submit">
+            Aanmaken
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  )
 }
 
 export default CreatePlantDialog

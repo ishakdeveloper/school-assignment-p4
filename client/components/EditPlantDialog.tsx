@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, Select, MenuItem, FormControl } from '@material-ui/core'
 import { createStyles, makeStyles, withStyles, Theme } from '@material-ui/core/styles';
+import { PlantI } from '../types/models/plant-model';
+import { useForm } from 'react-hook-form';
 
 interface DialogContentProps {
     isOpen: boolean
     handleClose: () => void
+    handleEditPlant: (id: number, payload: PlantI) => void
+    plant: PlantI
 }
 
 const BootstrapInput = withStyles((theme: Theme) =>
@@ -55,56 +59,55 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const EditPlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose }) => {
+const EditPlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, handleEditPlant, plant }) => {
   const classes = useStyles();
-  const [kleur, setKleur] = useState('');
-  const handleKleurInput = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setKleur(event.target.value as string);
-  };
+  const { register, handleSubmit } = useForm()
 
-    return (
-        <Dialog open={isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Plant bewerken</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nobis?
-          </DialogContentText>
-          <TextField  variant="outlined" autoFocus margin="dense" id="title" label="Naam" type="text" fullWidth />
-            <FormControl fullWidth>
-              <Select fullWidth value={kleur} onChange={handleKleurInput} placeholder="Test" input={<BootstrapInput />} >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth className={classes.marginForm}>
-              <Select fullWidth value={kleur} onChange={handleKleurInput} placeholder="Test" input={<BootstrapInput />} >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField variant="outlined" margin="dense" id="description" label="Hoogte" type="text" fullWidth />
-            <TextField variant="outlined" margin="dense" id="description" label="Start bloeitijd" type="number" fullWidth />
-            <TextField variant="outlined" margin="dense" id="description" label="Einde bloeitijd" type="number" fullWidth />
-            <TextField variant="outlined" margin="dense" id="description" label="Prijs" type="number" fullWidth />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Bewerken
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
+  const handleFormSubmit = (data) => {
+    handleEditPlant(plant.plantcode, data)
+    console.log(data)
+    handleClose()
+  }
+
+  return (
+      <Dialog open={isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">Plant bewerken</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nobis?
+        </DialogContentText>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
+          <TextField {...register('plantnaam')} defaultValue={plant.plantnaam} variant="outlined" margin="dense" id="title" label="Naam" type="text" fullWidth />
+          <FormControl fullWidth>
+            <Select {...register('soort')} defaultValue={plant.soort} fullWidth placeholder="Test" input={<BootstrapInput />} >
+              <MenuItem value="HEESTER">HEESTER</MenuItem>
+              <MenuItem value="BOOM">BOOM</MenuItem>
+              <MenuItem value="VAST">VAST</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth className={classes.marginForm}>
+            <Select {...register('kleur')} defaultValue={plant.kleur} fullWidth placeholder="Test" input={<BootstrapInput />} >
+              <MenuItem value="ROOD">ROOD</MenuItem>
+              <MenuItem value="GROEN">GROEN</MenuItem>
+              <MenuItem value="BLAUW">BLAUW</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField {...register('hoogte')} defaultValue={plant.hoogte} variant="outlined" margin="dense" id="description" label="Hoogte" type="number" fullWidth />
+          <TextField {...register('bloeitijd_start')} defaultValue={plant.bloeitijd_start} variant="outlined" margin="dense" id="description" label="Start bloeitijd" type="number" fullWidth />
+          <TextField {...register('bloeitijd_eind')} defaultValue={plant.bloeitijd_einde} variant="outlined" margin="dense" id="description" label="Einde bloeitijd" type="number" fullWidth />
+          <TextField {...register('prijs')} defaultValue={plant.prijs} variant="outlined" margin="dense" id="description" label="Prijs" type="number" fullWidth />
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit(handleFormSubmit)} color="primary">
+          Bewerken
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
 }
 
 export default EditPlantDialog

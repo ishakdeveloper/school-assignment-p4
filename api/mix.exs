@@ -25,7 +25,8 @@ defmodule Api.MixProject do
       {:ecto_sql, "~> 3.6.2"},
       {:plug_cowboy, "~> 2.5.0"},
       {:jason, "~> 1.2.2"},
-      {:myxql, "~> 0.5.0"}
+      {:myxql, "~> 0.5.0"},
+      {:cors_plug, "~> 2.0"}
     ]
   end
 end

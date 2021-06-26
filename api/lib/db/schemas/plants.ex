@@ -2,7 +2,7 @@ defmodule DB.Schemas.PlantSchema do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @items [:plantcode, :plantnaam, :soort, :kleur, :hoogte, :bloeitijd_start, :bloeitijd_einde, :prijs]
+  # @items [:plantcode, :plantnaam, :soort, :kleur, :hoogte, :bloeitijd_start, :bloeitijd_einde, :prijs]
   @derive {Jason.Encoder, only: [:plantcode, :plantnaam, :soort, :kleur, :hoogte, :bloeitijd_start, :bloeitijd_einde, :prijs]}
 
   @primary_key {:plantcode, :id, autogenerate: true}
