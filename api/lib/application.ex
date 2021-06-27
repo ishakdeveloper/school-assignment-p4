@@ -5,6 +5,7 @@ defmodule Api.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      OTP.Supervisors.Plant,
       {Plants.Repo, []},
       Plug.Cowboy.child_spec(scheme: :http, plug: Api, options: [port: String.to_integer("4000"), dispatch: dispatch()])
     ]
