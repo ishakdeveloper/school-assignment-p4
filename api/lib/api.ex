@@ -9,6 +9,8 @@ defmodule Api do
   alias Web.Routes.Bestelregel
   alias Web.Routes.Leverancier
   alias Web.Routes.LevAssortiment
+  alias Web.Routes.Colors
+  alias Web.Routes.Soorten
 
   plug Plug.Parsers, parsers: [:urlencoded, :multipart, :json], pass: ["application/json"], json_decoder: Jason
 
@@ -22,6 +24,8 @@ defmodule Api do
   forward "/bestelregel", to: Bestelregel
   forward "/leverancier", to: Leverancier
   forward "/lev_assortiment", to: LevAssortiment
+  forward "/colors", to: Colors
+  forward "/soorten", to: Soorten
 
   get "/" do
     conn |> send_resp(200, Jason.encode!(%{message: "Homepagina."}))
