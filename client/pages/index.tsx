@@ -95,20 +95,18 @@ export default function Home() {
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false)
   const [createDialog, setCreateDialog] = useState<boolean>(false)
   const [editDialog, setEditDialog] = useState<boolean>(false)
-  const handleAddPlant = (payload: PlantI) => { addPlant(payload) }
-  const handleEditPlant = (id: number, payload: PlantI) => { updatePlant(id, payload) }
-  const handleDeletePlant = (id: number) => { deletePlant(id) }
   const handleSearchQuery = (event) => { setSearch(event.target.value) }
+  const onUpdate = (plants: PlantI[]) => {setPlants(plants), setFilteredPlants(plants)}
+  const setData = () => getPlants().then(plants => onUpdate(plants))
+  const handleAddPlant = (payload: PlantI) => { addPlant(payload).then(() => setData()) }
+  const handleEditPlant = (id: number, payload: PlantI) => { updatePlant(id, payload).then(() => setData()) }
+  const handleDeletePlant = (id: number) => { deletePlant(id).then(() => setData()) }
 
   const handleColorFilter = (event) => {
     setKleurenValue(event.target.value)
     let result = plants.filter(plant => plant.kleur === event.target.value)
     if(event.target.value == "ALL") { result = plants.filter(plant => plant) }
     setFilteredPlants(result)
-
-    if(search.length > 0) {
-      setKleurenValue("ALL")
-    }
   }
   
   useEffect(() => { 
@@ -133,13 +131,13 @@ export default function Home() {
               <Select value={kleurenValue} defaultValue="ALL" onChange={handleColorFilter} fullWidth input={<BootstrapInput />} >
                 <MenuItem value="ALL">ALL</MenuItem>
                 {kleuren.map((kleur, index) => (
-                  <MenuItem key={index} value={kleur}>{kleur}</MenuItem>
+                  <MenuItem key={index} value={kleur}>{ kleur }</MenuItem>
                 ))}
               </Select>
              </div>
              <div>
               <Paper component="form" className={classes.root}>
-                <IconButton type="submit" className={classes.iconButton} aria-label="search">
+                <IconButton className={classes.iconButton} aria-label="search">
                   <SearchIcon />
                 </IconButton>
                 <Divider className={classes.divider} orientation="vertical" />
