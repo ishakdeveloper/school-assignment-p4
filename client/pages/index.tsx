@@ -14,6 +14,9 @@ import EditPlantDialog from "../components/EditPlantDialog";
 import { Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core'
 import { PlantI } from "../types/models/plant-model";
 import { addPlant, deletePlant, getPlants, updatePlant } from "../services/plant-service";
+import { getColors } from "../services/color-service";
+import { getSoorten } from "../services/soorten-service";
+import { SyntheticEvent } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,16 +48,34 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const classes = useStyles();
   const [plants, setPlants] = useState<PlantI[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [deleteDialog, setDeleteDialog] = useState(false)
-  const [createDialog, setCreateDialog] = useState(false)
-  const [editDialog, setEditDialog] = useState(false)
+  const [filteredPlants, setFilteredPlants] = useState<PlantI[]>(plants)
+  const [kleuren, setKleuren] = useState<string[]>([])
+  const [soorten, setSoorten] = useState<string[]>([])
   const [plantInfo, setPlantInfo] = useState(null)
+  const [search, setSearch] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(true)
+  const [deleteDialog, setDeleteDialog] = useState<boolean>(false)
+  const [createDialog, setCreateDialog] = useState<boolean>(false)
+  const [editDialog, setEditDialog] = useState<boolean>(false)
   const handleAddPlant = (payload: PlantI) => { addPlant(payload) }
   const handleEditPlant = (id: number, payload: PlantI) => { updatePlant(id, payload) }
   const handleDeletePlant = (id: number) => { deletePlant(id) }
+
+  const handleSearchQuery = (event) => {
+    setSearch(event.target.value)
+  }
   
-  useEffect(() => { getPlants().then((data: PlantI[]) => setPlants(data)), setLoading(false) }, [plants])
+  useEffect(() => { 
+    getPlants().then((data: PlantI[]) => {setPlants(data), setFilteredPlants(data)})
+    getColors().then((data: string[]) => setKleuren(data))
+    getSoorten().then((data: string[]) => setSoorten(data))
+    setLoading(false) 
+  }, [])
+
+  useEffect(() => {
+    const result = plants.filter(plant => { return plant.plantnaam.toLowerCase().includes(search.toLowerCase()) })
+    setFilteredPlants(result)
+  }, [search])
 
   return (
     <Fragment>
@@ -67,7 +88,7 @@ export default function Home() {
                   <SearchIcon />
                 </IconButton>
                 <Divider className={classes.divider} orientation="vertical" />
-                <InputBase className={classes.input} placeholder="Search Plants" inputProps={{ 'aria-label': 'search google maps' }} />
+                <InputBase value={search} onChange={(event) => handleSearchQuery(event)} className={classes.input} placeholder="Search plants by name" inputProps={{ 'aria-label': 'search' }} />
               </Paper>
            </div>
         </div>
@@ -88,7 +109,7 @@ export default function Home() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                      {loading ? <div>Loading...</div> : plants.slice().reverse().map((p, i) => (
+                      {loading ? <div>Loading...</div> : filteredPlants.slice().reverse().map((p, i) => (
                         <TableRow key={i}>
                             <TableCell>{ p.plantcode }</TableCell>
                             <TableCell>{ p.plantnaam }</TableCell>
@@ -132,6 +153,9 @@ export default function Home() {
           isOpen={createDialog} 
           handleClose={() => setCreateDialog(false)} 
           handleAddPlant={handleAddPlant}
+          plants={plants}
+          kleuren={kleuren}
+          soorten={soorten}
         />
       )}
 
@@ -141,6 +165,8 @@ export default function Home() {
           handleClose={() => setEditDialog(false)} 
           handleEditPlant={handleEditPlant}
           plant={plantInfo}
+          kleuren={kleuren}
+          soorten={soorten}
         />
       )}
     </Fragment>

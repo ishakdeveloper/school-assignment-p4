@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "hooks/useForm.js"  ],
+, "hooks/useForm.ts"  ],
   "exclude": [
     "node_modules"
   ]

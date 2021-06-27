@@ -1,14 +1,16 @@
-import React, { SyntheticEvent, useState } from 'react'
+import React from 'react'
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, Select, MenuItem, FormControl } from '@material-ui/core'
 import { createStyles, makeStyles, withStyles, Theme } from '@material-ui/core/styles';
-import { addPlant } from '../services/plant-service';
 import { PlantI } from '../types/models/plant-model';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 interface DialogContentProps {
     isOpen: boolean
     handleClose: () => void
     handleAddPlant: (payload: PlantI) => void
+    plants: PlantI[]
+    kleuren: string[]
+    soorten: string[]
 }
 
 const BootstrapInput = withStyles((theme: Theme) =>
@@ -59,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const CreatePlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, handleAddPlant }) => {
+const CreatePlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, handleAddPlant, plants, kleuren, soorten }) => {
   const classes = useStyles();
   const { register, handleSubmit } = useForm()
 
@@ -81,16 +83,16 @@ const CreatePlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, 
             <TextField {...register('plantnaam')} variant="outlined"  margin="dense" id="title" label="Naam" type="text" fullWidth />
             <FormControl fullWidth>
               <Select {...register('soort')} fullWidth placeholder="Test" input={<BootstrapInput />} >
-                <MenuItem value="HEESTER">HEESTER</MenuItem>
-                <MenuItem value="BOOM">BOOM</MenuItem>
-                <MenuItem value="VAST">VAST</MenuItem>
+                {soorten.map((soort, index) => (
+                  <MenuItem key={index} value={soort}>{soort}</MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl fullWidth className={classes.marginForm}>
               <Select {...register('kleur')} fullWidth placeholder="Test" input={<BootstrapInput />} >
-                <MenuItem value="ROOD">ROOD</MenuItem>
-                <MenuItem value="GROEN">GROEN</MenuItem>
-                <MenuItem value="BLAUW">BLAUW</MenuItem>
+                {kleuren.map((kleur, index) => (
+                  <MenuItem key={index} value={kleur}>{kleur}</MenuItem>
+                ))}
               </Select>
             </FormControl>
             <TextField {...register('hoogte')} variant="outlined" margin="dense" id="description" label="Hoogte" type="number" fullWidth />

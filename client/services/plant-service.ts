@@ -1,9 +1,6 @@
 import { PlantI } from '../types/models/plant-model'
-import axios, { AxiosResponse } from 'axios'
-
-const api = axios.create({
-    baseURL: 'http://localhost:4000'
-})
+import { AxiosResponse } from 'axios'
+import { api } from '../config/api'
 
 export const getPlants = async (): Promise<PlantI[]> => {
     return await api.get<PlantI[]>('/plants').then((response: AxiosResponse<PlantI[]>) => { return response.data })

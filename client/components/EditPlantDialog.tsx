@@ -9,6 +9,8 @@ interface DialogContentProps {
     handleClose: () => void
     handleEditPlant: (id: number, payload: PlantI) => void
     plant: PlantI
+    kleuren: string[]
+    soorten: string[]
 }
 
 const BootstrapInput = withStyles((theme: Theme) =>
@@ -59,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const EditPlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, handleEditPlant, plant }) => {
+const EditPlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, handleEditPlant, plant, kleuren, soorten }) => {
   const classes = useStyles();
   const { register, handleSubmit } = useForm()
 
@@ -80,16 +82,16 @@ const EditPlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, ha
           <TextField {...register('plantnaam')} defaultValue={plant.plantnaam} variant="outlined" margin="dense" id="title" label="Naam" type="text" fullWidth />
           <FormControl fullWidth>
             <Select {...register('soort')} defaultValue={plant.soort} fullWidth placeholder="Test" input={<BootstrapInput />} >
-              <MenuItem value="HEESTER">HEESTER</MenuItem>
-              <MenuItem value="BOOM">BOOM</MenuItem>
-              <MenuItem value="VAST">VAST</MenuItem>
+                {soorten.map((soort, index) => (
+                  <MenuItem key={index} value={soort}>{soort}</MenuItem>
+                ))}
             </Select>
           </FormControl>
           <FormControl fullWidth className={classes.marginForm}>
             <Select {...register('kleur')} defaultValue={plant.kleur} fullWidth placeholder="Test" input={<BootstrapInput />} >
-              <MenuItem value="ROOD">ROOD</MenuItem>
-              <MenuItem value="GROEN">GROEN</MenuItem>
-              <MenuItem value="BLAUW">BLAUW</MenuItem>
+                {kleuren.map((kleur, index) => (
+                  <MenuItem key={index} value={kleur}>{kleur}</MenuItem>
+                ))}
             </Select>
           </FormControl>
           <TextField {...register('hoogte')} defaultValue={plant.hoogte} variant="outlined" margin="dense" id="description" label="Hoogte" type="number" fullWidth />
