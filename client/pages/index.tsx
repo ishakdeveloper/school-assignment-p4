@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, withStyles, createStyles, Select, MenuItem, Theme } from "@material-ui/core";
 import { Button, Tooltip } from "@material-ui/core";
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
@@ -16,7 +16,44 @@ import { PlantI } from "../types/models/plant-model";
 import { addPlant, deletePlant, getPlants, updatePlant } from "../services/plant-service";
 import { getColors } from "../services/color-service";
 import { getSoorten } from "../services/soorten-service";
-import { SyntheticEvent } from "react";
+import { useForm } from "react-hook-form";
+
+const BootstrapInput = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      'label + &': {
+        marginTop: theme.spacing(3),
+      },
+    },
+    input: {
+      borderRadius: 4,
+      position: 'relative',
+      backgroundColor: theme.palette.background.paper,
+      border: '1px solid #ced4da',
+      fontSize: 16,
+      padding: '10px 26px 10px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      // Use the system font instead of the default Roboto font.
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+      '&:focus': {
+        borderRadius: 4,
+        borderColor: '#80bdff',
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+      },
+    },
+  }),
+)(InputBase);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +87,7 @@ export default function Home() {
   const [plants, setPlants] = useState<PlantI[]>([])
   const [filteredPlants, setFilteredPlants] = useState<PlantI[]>(plants)
   const [kleuren, setKleuren] = useState<string[]>([])
+  const [kleurenValue, setKleurenValue] = useState<string>('')
   const [soorten, setSoorten] = useState<string[]>([])
   const [plantInfo, setPlantInfo] = useState(null)
   const [search, setSearch] = useState<string>('')
@@ -60,9 +98,17 @@ export default function Home() {
   const handleAddPlant = (payload: PlantI) => { addPlant(payload) }
   const handleEditPlant = (id: number, payload: PlantI) => { updatePlant(id, payload) }
   const handleDeletePlant = (id: number) => { deletePlant(id) }
+  const handleSearchQuery = (event) => { setSearch(event.target.value) }
 
-  const handleSearchQuery = (event) => {
-    setSearch(event.target.value)
+  const handleColorFilter = (event) => {
+    setKleurenValue(event.target.value)
+    let result = plants.filter(plant => plant.kleur === event.target.value)
+    if(event.target.value == "ALL") { result = plants.filter(plant => plant) }
+    setFilteredPlants(result)
+
+    if(search.length > 0) {
+      setKleurenValue("ALL")
+    }
   }
   
   useEffect(() => { 
@@ -83,6 +129,15 @@ export default function Home() {
         <div className="app-header">
            <Button onClick={() => setCreateDialog(true)} variant="contained" color="primary">Nieuwe Plant</Button>
            <div className="app-filters">
+             <div>
+              <Select value={kleurenValue} defaultValue="ALL" onChange={handleColorFilter} fullWidth input={<BootstrapInput />} >
+                <MenuItem value="ALL">ALL</MenuItem>
+                {kleuren.map((kleur, index) => (
+                  <MenuItem key={index} value={kleur}>{kleur}</MenuItem>
+                ))}
+              </Select>
+             </div>
+             <div>
               <Paper component="form" className={classes.root}>
                 <IconButton type="submit" className={classes.iconButton} aria-label="search">
                   <SearchIcon />
@@ -90,6 +145,7 @@ export default function Home() {
                 <Divider className={classes.divider} orientation="vertical" />
                 <InputBase value={search} onChange={(event) => handleSearchQuery(event)} className={classes.input} placeholder="Search plants by name" inputProps={{ 'aria-label': 'search' }} />
               </Paper>
+             </div>
            </div>
         </div>
         <div className="table-container">
