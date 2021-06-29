@@ -97,7 +97,7 @@ const CreatePlantDialog: React.FC<DialogContentProps> = ({ isOpen, handleClose, 
             </FormControl>
             <TextField {...register('hoogte')} variant="outlined" margin="dense" id="description" label="Hoogte" type="number" fullWidth />
             <TextField {...register('bloeitijd_start')} variant="outlined" margin="dense" id="description" label="Start bloeitijd" type="number" fullWidth />
-            <TextField {...register('bloeitijd_eind')} variant="outlined" margin="dense" id="description" label="Einde bloeitijd" type="number" fullWidth />
+            <TextField {...register('bloeitijd_einde')} variant="outlined" margin="dense" id="description" label="Einde bloeitijd" type="number" fullWidth />
             <TextField {...register('prijs')} variant="outlined" margin="dense" id="description" label="Prijs" type="number" fullWidth />
           </form>
         </DialogContent>
